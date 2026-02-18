@@ -3,6 +3,11 @@ name: Playwright Tests (Docker)
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -19,11 +24,30 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
             playwright-tests
+      - name: Generate timestamp
+        id: timestamp
+        run: echo "pw_filename=playwright-report-$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_OUTPUT
 
-      - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
+      - name: Rename report folder with timestamp
+        run: mv playwright-report "${{ steps.timestamp.outputs.pw_filename }}"
+        
+      - name: Upload report for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
         if: always()
         with:
-          name: playwright-report
-          path: playwright-report
-          retention-days: 30
+          path: "${{ steps.timestamp.outputs.pw_filename }}"
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-pages-artifact@v3
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
