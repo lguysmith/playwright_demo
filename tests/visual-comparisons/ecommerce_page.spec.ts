@@ -15,9 +15,6 @@ test.describe("Page Visual Comparisons", () => {
   });
 
   test("ecommerce page - initial load", async ({ page, browserName }) => {
-    // Wait for page to be stable
-    await page.waitForLoadState('domcontentloaded');
-    
     // Take full page screenshot
     await expect(page).toHaveScreenshot(`ecommerce-initial-${browserName}.png`, {
       fullPage: true,
@@ -30,7 +27,6 @@ test.describe("Page Visual Comparisons", () => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
     await page.reload();
-    await page.waitForLoadState('domcontentloaded');
     
     // Take screenshot in mobile viewport
     await expect(page).toHaveScreenshot(`ecommerce-mobile-${browserName}.png`, {
@@ -44,7 +40,6 @@ test.describe("Page Visual Comparisons", () => {
     // Set tablet viewport
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.reload();
-    await page.waitForLoadState('domcontentloaded');
     
     // Take screenshot in tablet viewport
     await expect(page).toHaveScreenshot(`ecommerce-tablet-${browserName}.png`, {
