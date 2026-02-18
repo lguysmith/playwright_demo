@@ -31,14 +31,6 @@ jobs:
       - name: Rename report folder with timestamp
         run: mv playwright-report "${{ steps.timestamp.outputs.pw_filename }}"
 
-      - name: Debug workspace
-        run: |
-          echo "Workspace contents:"
-          ls -al
-          echo "Timestamped folder:"
-          echo "${{ steps.timestamp.outputs.pw_filename }}"
-          ls -al "${{ steps.timestamp.outputs.pw_filename }}" || echo "Folder missing!"
-
       - name: Upload report for GitHub Pages
         uses: actions/upload-pages-artifact@v4
         if: always()
