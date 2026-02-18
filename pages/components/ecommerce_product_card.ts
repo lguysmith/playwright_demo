@@ -5,7 +5,7 @@ import { Locator, Page } from "@playwright/test";
  * Provides methods to interact with and retrieve information from the card.
  */
 export class ProductCard {
-  private readonly card: Locator;
+  public readonly card: Locator;
 
   constructor(card: Locator) {
     this.card = card;
