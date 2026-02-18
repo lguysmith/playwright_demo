@@ -113,51 +113,12 @@ test.describe("Page Visual Comparisons - With Mocked Data (Example)", () => {
         body: JSON.stringify(filteredProducts)
       });
     });
-
-    // Now navigate to the page - it will use mocked data
-    await ecommercePage.goto();
-    await waitForAllImages(page, browserName);
     
     // Take consistent screenshot with mocked data
     await expect(page).toHaveScreenshot(`ecommerce-mocked-${browserName}.png`, {
       fullPage: true,
       maxDiffPixels: 50,
+      stylePath: SCREENSHOT_STYLE_PATH,
     });
   });
 });
-
-/**
- * Helper function to wait for all images to load completely
- * Handles lazy-loaded images by scrolling through the page
- */
-async function waitForAllImages(page: Page, browserName?: string) {
-  // First, ensure DOM is ready
-  await page.waitForLoadState('domcontentloaded');
-  
-  // Scroll through page to trigger lazy-loaded images
-  await page.evaluate(async () => {
-    // Scroll to bottom in steps to trigger lazy loading
-    const scrollHeight = document.body.scrollHeight;
-    const viewportHeight = window.innerHeight;
-    const steps = Math.ceil(scrollHeight / viewportHeight);
-    
-    for (let i = 0; i <= steps; i++) {
-      window.scrollTo(0, i * viewportHeight);
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    
-    // Scroll back to top
-    window.scrollTo(0, 0);
-  });
-  
-  // Wait for all images to be fully loaded
-  await page.waitForFunction(() => {
-    const images = Array.from(document.querySelectorAll('img'));
-    return images.every(img => img.complete && img.naturalHeight > 0);
-  }, { timeout: 15000 });
-  
-  // WebKit sometimes needs extra time for rendering
-  if (browserName === 'webkit') {
-    await page.waitForTimeout(500);
-  }
-}
