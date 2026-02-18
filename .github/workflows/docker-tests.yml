@@ -25,26 +25,11 @@ jobs:
             -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
             playwright-tests
 
-      - name: Fix permissions on report folder
-        run: sudo chown -R $USER:$USER playwright-report
-
-      - name: Generate timestamp
-        id: timestamp
-        run: echo "pw_filename=playwright-report-$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_OUTPUT
-
-      - name: Rename report folder with timestamp
-        run: mv playwright-report "${{ steps.timestamp.outputs.pw_filename }}"
-
-      - name: Prepare Pages directory
-        run: |
-          mkdir -p pages/playwright-report
-          mv "${{ steps.timestamp.outputs.pw_filename }}" "pages/playwright-report/${{ steps.timestamp.outputs.pw_filename }}"
-
       - name: Upload report for GitHub Pages
         uses: actions/upload-pages-artifact@v4
         if: always()
         with:
-          path: pages
+          path: playwright-report
 
   deploy:
     needs: test
