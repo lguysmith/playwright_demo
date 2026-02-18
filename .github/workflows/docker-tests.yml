@@ -24,6 +24,10 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
             playwright-tests
+
+      - name: Fix permissions on report folder
+        run: sudo chown -R $USER:$USER playwright-report
+
       - name: Generate timestamp
         id: timestamp
         run: echo "pw_filename=playwright-report-$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_OUTPUT
