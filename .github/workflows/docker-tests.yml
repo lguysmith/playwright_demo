@@ -23,7 +23,23 @@ jobs:
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
+            -v ${{ github.workspace }}/test-results:/app/test-results \
             playwright-tests
+
+      # OPTIONAL: upload videos as artifacts (keeps folder structure)
+      - name: Upload Playwright videos
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-videos
+          path: test-results/**/video.webm
+
+      # Copy videos into the HTML report so Pages can serve them
+      - name: Copy videos into report
+        if: always()
+        run: |
+          mkdir -p playwright-report/videos
+          rsync -av test-results/ playwright-report/videos/ --include="*/" --include="video.webm" --exclude="*"
 
       - name: Upload report for GitHub Pages
         uses: actions/upload-pages-artifact@v4

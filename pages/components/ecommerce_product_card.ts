@@ -51,6 +51,7 @@ export class ProductCard {
 export class ProductCardList {
   private readonly page: Page;
 
+
   constructor(page: Page) {
     this.page = page;
   }
