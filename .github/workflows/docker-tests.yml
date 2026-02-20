@@ -45,11 +45,17 @@ jobs:
           mkdir -p playwright-report/videos
           rsync -av test-results/ playwright-report/videos/ --include="*/" --include="video.webm" --exclude="*"
 
+      - name: Prepare results folder
+        if: always()
+        run: |
+          mkdir -p results/latest-results
+          cp -R playwright-report/* results/latest-results/
+          
       - name: Upload report for GitHub Pages
         uses: actions/upload-pages-artifact@v4
         if: always()
         with:
-          path: playwright-report
+          path: results
 
   deploy-playwright-report:
     needs: test
