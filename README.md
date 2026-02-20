@@ -1,6 +1,6 @@
 # Playwright Demo Project
 
-A comprehensive end-to-end testing suite built with Playwright, featuring functional tests and visual regression testing for e-commerce web applications.
+A demonstration testing suite built with Playwright, with functional tests and visual regression testing for test e-commerce web site.
 
 ## 📋 Table of Contents
 
@@ -23,7 +23,7 @@ This project demonstrates advanced Playwright testing patterns including:
 
 - **Page Object Model (POM)** - Organized, maintainable test structure
 - **Custom Fixtures** - Reusable page object instances across tests
-- **Visual Regression Testing** - Screenshot comparison with custom CSS styling
+- **Visual Regression Testing** - Screenshot comparison tests
 - **Multi-browser Testing** - Chromium, Firefox, and WebKit support
 - **Dockerized Testing** - Consistent test environment across platforms
 - **CI/CD Integration** - GitHub Actions workflow with artifact publishing
