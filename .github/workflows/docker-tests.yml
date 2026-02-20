@@ -22,10 +22,15 @@ jobs:
       - name: Run tests inside Docker
         run: |
           docker run --rm \
-            --user $(id -u):$(id -g) \
             -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
             -v ${{ github.workspace }}/test-results:/app/test-results \
             playwright-tests
+      
+      # Fix permissions so the runner can read/write the output
+      - name: Fix permissions on output folders
+        if: always()
+        run: |
+          sudo chown -R $USER:$USER playwright-report test-results
 
       - name: Upload Playwright videos
         if: failure()
