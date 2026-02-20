@@ -2,6 +2,8 @@
 
 A demonstration testing suite built with Playwright, with functional tests and visual regression testing for test e-commerce web site.
 
+[Latest run results](https://lguysmith.github.io/playwright_demo/latest-results/)
+
 ## 📋 Table of Contents
 
 - [Overview](#overview)
