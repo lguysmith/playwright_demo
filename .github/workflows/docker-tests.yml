@@ -23,16 +23,43 @@ jobs:
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
+            -v ${{ github.workspace }}/test-results:/app/test-results \
             playwright-tests
+      
+      # Fix permissions so the runner can read/write the output
+      - name: Fix permissions on output folders
+        if: always()
+        run: |
+          sudo chown -R $USER:$USER playwright-report test-results
 
+      - name: Upload Playwright videos
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-videos
+          path: test-results/**/video.webm
+
+      - name: Copy videos into report
+        if: always()
+        run: |
+          mkdir -p playwright-report/videos
+          rsync -av test-results/ playwright-report/videos/ --include="*/" --include="video.webm" --exclude="*"
+
+      - name: Prepare results folder
+        if: always()
+        run: |
+          mkdir -p results/latest-results
+          cp -R playwright-report/* results/latest-results/
+          
       - name: Upload report for GitHub Pages
         uses: actions/upload-pages-artifact@v4
         if: always()
         with:
-          path: playwright-report
+          path: results
 
-  deploy:
+  deploy-playwright-report:
     needs: test
+    if: always()
     permissions:
       contents: read
       pages: write
@@ -42,6 +69,6 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to GitHub Pages
+      - name: deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
