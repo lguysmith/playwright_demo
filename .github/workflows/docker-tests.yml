@@ -51,8 +51,9 @@ jobs:
         with:
           path: playwright-report
 
-  deploy:
+  deploy-playwright-report:
     needs: test
+    if: always()
     permissions:
       contents: read
       pages: write
@@ -62,6 +63,6 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to GitHub Pages
+      - name: deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
